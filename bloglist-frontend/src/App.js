@@ -5,42 +5,57 @@ import loginService from './services/login'
 import blogService from './services/blogs'
 
 function App() {
-  const [blogs, setBlogs] = useState(null)
+  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   //Render all the blogs
-  useEffect(() => {
+  /*useEffect(() => {
+    let isSubscribed = true
+
     blogService.getAll().then(response => {
-      setBlogs(response)
-      console.log(response)
-    })  
-  }, [])
+      if (isSubscribed) {
+        setBlogs(response)
+        console.log(response)
+      }
+    }).catch(ex => console.error(ex))
+    return () => isSubscribed = false
+    })
+  */
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
-      console.log('mot')
     }
+    let isSubscribed = true
+
+    blogService.getAll().then(response => {
+      if (isSubscribed) {
+        setBlogs(response)
+        console.log(response)
+      }
+    }).catch(ex => console.error(ex))
+    return () => isSubscribed = false
   }, [])
   
   const handleLogin = async (event) => {
     event.preventDefault()
+    console.log('mot')
     try {
       const user = await loginService.login({
         username, password
       })
-
-      window.localStorage.setItem(
+      console.log('hai')
+     window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
       )
-
+      console.log('ba')
       blogService.setToken(user.token)
       setUser(user)
+      console.log('bon')
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -49,29 +64,23 @@ function App() {
 
   }
   
-  const showBlogs = () => {
-    console.log('hai')
-    console.log('ba')
-    return blogs.map(blog => 
-    <Blog key={blog.id} blog={blog} />)
+  const handleLogout = async (event) => {
+  event.preventDefault()
+  window.localStorage.clear()
+  setUser(null)
+  return window.location.reload()
   }
-  const handleUsername = (event) => {
-    setUsername(event.target.value)
-  }
-  const handlePassword = (event) => {
-    setPassword(event.target.value)
-  }
-  
   return (
     <div>
       <h1>Blogs</h1>
       <h2>Login</h2>
       
       {user === null ? 
-        <LoginForm handleLogin={handleLogin} username={username} password={password} handleUsername={handleUsername} handlePassword={handlePassword} /> : 
+        <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} /> : 
         <div>
-          <p>{user.name} logged in</p> 
-          {showBlogs()}      
+          <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p> 
+          {blogs.map(blog => 
+            <Blog key={blog.id} blog={blog} />)}      
         </div>
 
       }
