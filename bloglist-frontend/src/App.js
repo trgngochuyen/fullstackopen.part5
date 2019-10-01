@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -10,32 +11,21 @@ function App() {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  //Render all the blogs
-  /*useEffect(() => {
-    let isSubscribed = true
-
-    blogService.getAll().then(response => {
-      if (isSubscribed) {
-        setBlogs(response)
-        console.log(response)
-      }
-    }).catch(ex => console.error(ex))
-    return () => isSubscribed = false
-    })
-  */
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
       setUser(user)
     }
+  }, [])
+
+  useEffect(() => {
     let isSubscribed = true
 
     blogService.getAll().then(response => {
       if (isSubscribed) {
         setBlogs(response)
-        console.log(response)
       }
     }).catch(ex => console.error(ex))
     return () => isSubscribed = false
@@ -43,19 +33,15 @@ function App() {
   
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('mot')
     try {
       const user = await loginService.login({
         username, password
       })
-      console.log('hai')
-     window.localStorage.setItem(
+      window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
       )
-      console.log('ba')
       blogService.setToken(user.token)
       setUser(user)
-      console.log('bon')
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -70,6 +56,7 @@ function App() {
   setUser(null)
   return window.location.reload()
   }
+  
   return (
     <div>
       <h1>Blogs</h1>
@@ -79,8 +66,9 @@ function App() {
         <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} /> : 
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p> 
-          {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog} />)}      
+          <BlogForm blogs={blogs} setBlogs={setBlogs}/>
+          {blogs.map((blog, i) => 
+            <Blog key={i} blog={blog}/>)}      
         </div>
 
       }

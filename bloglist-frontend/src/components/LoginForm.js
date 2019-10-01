@@ -3,7 +3,7 @@ import React from 'react'
 const LoginForm = ({handleLogin, username, password, setUsername, setPassword}) => {
     return (<form onSubmit={handleLogin}>
       <div>
-        username
+        username: 
         <input 
         type="text"
         value={username}
@@ -12,7 +12,7 @@ const LoginForm = ({handleLogin, username, password, setUsername, setPassword}) 
         />
       </div>
       <div>
-        password
+        password: 
         <input
         type="password"
         value ={password}
