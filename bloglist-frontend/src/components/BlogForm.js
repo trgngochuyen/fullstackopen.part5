@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({blogs, setBlogs}) => {
+const BlogForm = ({blogs, setBlogs, notification}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -14,12 +14,14 @@ const BlogForm = ({blogs, setBlogs}) => {
       url
     }
     try {
-      blogService.create(newBlog)
+      await blogService.create(newBlog)
+      notification('green', `New blog ${title} was just created.`)
       setBlogs(blogs.concat(newBlog))
       setTitle("")
       setUrl("")
       setAuthor("")
     } catch (exception) {
+      notification('red', 'Title and Url are required!')
       console.log(exception)
     }
     

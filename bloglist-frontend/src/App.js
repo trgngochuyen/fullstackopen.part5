@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Message from './components/Message'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -10,6 +11,8 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [color, setColor] = useState('')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -31,6 +34,11 @@ function App() {
     return () => isSubscribed = false
   }, [])
   
+  const notification = (color, message) => {
+    setMessage(message)
+    setColor(color)
+    setTimeout(() => {setMessage(null)}, 5000)
+  }
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -42,9 +50,11 @@ function App() {
       )
       blogService.setToken(user.token)
       setUser(user)
+      notification('green', `${username} successfully logged in`)
       setUsername('')
       setPassword('')
     } catch (exception) {
+      notification('red', 'Wrong username or password')
       console.log(exception)
     }
 
@@ -60,13 +70,14 @@ function App() {
   return (
     <div>
       <h1>Blogs</h1>
+      <Message message={message} color={color}/>
       <h2>Login</h2>
       
       {user === null ? 
         <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} /> : 
         <div>
-          <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p> 
-          <BlogForm blogs={blogs} setBlogs={setBlogs}/>
+          <p>{user.username} logged in <button onClick={handleLogout}>Logout</button></p> 
+          <BlogForm blogs={blogs} setBlogs={setBlogs} notification={notification}/>
           {blogs.map((blog, i) => 
             <Blog key={i} blog={blog}/>)}      
         </div>
