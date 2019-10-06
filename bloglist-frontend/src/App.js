@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Message from './components/Message'
+import Togglable from './components/Togglable'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -13,6 +14,8 @@ function App() {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState('')
+
+  const blogFormRef = React.createRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -77,7 +80,10 @@ function App() {
         <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} /> : 
         <div>
           <p>{user.username} logged in <button onClick={handleLogout}>Logout</button></p> 
-          <BlogForm blogs={blogs} setBlogs={setBlogs} notification={notification}/>
+          
+          <Togglable buttonLabel="New Blog" ref={blogFormRef}>
+            <BlogForm blogs={blogs} setBlogs={setBlogs} notification={notification} blogFormRef={blogFormRef}/>
+          </Togglable>
           {blogs.map((blog, i) => 
             <Blog key={i} blog={blog}/>)}      
         </div>
