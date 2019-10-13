@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import LikeButton from './LikeButton'
 
 
 const Blog = ({ blog }) => {
   const [expand, setExpand] = useState(false)
+  let [blogLikes, setLikes] = useState(blog.likes)
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,13 +22,14 @@ const Blog = ({ blog }) => {
   }
 
     return (
-      <div style={blogStyle}>
+      <div  style={blogStyle}>
         <div onClick={() => blogClicked() }>
-          {blog.title} {blog.author}
+          <p>{blog.title}</p> 
+          <p>{blog.author}</p>
         </div>
         <div style={hideOrShow}>
           <p><a href={blog.url}>{blog.url}</a></p>
-          <p>{blog.likes} likes <button>like</button></p>
+          <p>{blogLikes} likes <LikeButton blog={blog} blogLikes={blogLikes} setLikes={setLikes} /></p>
           <p>added by {blog.author}</p>
         </div>
       </div>
