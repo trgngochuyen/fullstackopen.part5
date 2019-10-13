@@ -1,5 +1,6 @@
 import React from 'react'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const LikeButton = ({blog, blogLikes, setLikes}) => {
 
@@ -25,6 +26,11 @@ const LikeButton = ({blog, blogLikes, setLikes}) => {
     return (
         <button onClick={handleLikeClick}>Like</button>
     )
+}
+LikeButton.propTypes = {
+  blog: PropTypes.object.isRequired,
+  blogLikes: PropTypes.number.isRequired,
+  setLikes: PropTypes.func.isRequired
 }
 
 export default LikeButton
