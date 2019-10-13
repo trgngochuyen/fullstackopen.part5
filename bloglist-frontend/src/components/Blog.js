@@ -20,6 +20,8 @@ const Blog = ({ blog }) => {
   const blogClicked = () => {
     setExpand(!expand)
   }
+ 
+  
 
     return (
       <div  style={blogStyle}>
