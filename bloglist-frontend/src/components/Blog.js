@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import LikeButton from './LikeButton'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [expand, setExpand] = useState(false)
   let [blogLikes, setLikes] = useState(blog.likes)
 
@@ -21,6 +21,8 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     setExpand(!expand)
   }
  
+  const removeButtonStyle = {display: blog.user.username===user.username ? '' : 'none'}
+
   const removeBlog = () => {
     try {
       const id = blog.id
@@ -47,7 +49,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
           <p><a href={blog.url}>{blog.url}</a></p>
           <p>{blogLikes} likes <LikeButton blog={blog} blogLikes={blogLikes} setLikes={setLikes} /></p>
           <p>added by {blog.author}</p>
-          <button onClick={() => removeBlog()}>Remove</button>
+          <button style={removeButtonStyle} onClick={() => removeBlog()}>Remove</button>
         </div>
       </div>
     )
