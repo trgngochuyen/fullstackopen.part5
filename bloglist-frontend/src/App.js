@@ -71,7 +71,7 @@ function App() {
   }
   
   const sorted = blogs.sort((a, b) => a.likes - b.likes)
-  const result = sorted.map((blog,i) => <Blog key={i} blog={blog}/>)
+  const result = sorted.map((blog,i) => <Blog key={i} blog={blog} blogs={blogs} setBlogs={setBlogs}/>)
 
   return (
     <div>
