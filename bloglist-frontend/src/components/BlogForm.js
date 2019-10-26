@@ -6,8 +6,6 @@ const BlogForm = ({blogs, setBlogs, notification, blogFormRef}) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   
-  
-
   const addBlog = async (event) => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()  
